@@ -40,3 +40,10 @@ next-env.d.ts
 /.sites-runtime/
 /outputs/
 /work/
+
+# local runtime database (ported off Cloudflare D1). Contains live registration records --
+# names, emails, phone numbers, flight details, dietary and accessibility needs. Never commit.
+/data/
+*.db
+*.db-wal
+*.db-shm
