@@ -1,0 +1,1 @@
+ALTER TABLE `registrations` ADD `email_status` text DEFAULT 'pending' NOT NULL;
