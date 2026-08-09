@@ -8,8 +8,14 @@ type EmailDetails = {
 };
 
 export async function sendConfirmationEmail(details: EmailDetails) {
-  const { env } = await import("cloudflare:workers");
-  const runtime = env as typeof env & { RESEND_API_KEY?: string; CONFIRMATION_FROM?: string };
+  // PORTED FROM CLOUDFLARE: `cloudflare:workers` does not exist under Node, so secrets come from
+  // the process environment instead. Returning "not_configured" when either value is absent is the
+  // generated behaviour and is kept on purpose -- a missing API key must not fail the
+  // registration itself, only the confirmation email.
+  const runtime = {
+    RESEND_API_KEY: process.env.RESEND_API_KEY,
+    CONFIRMATION_FROM: process.env.CONFIRMATION_FROM,
+  };
   if (!runtime.RESEND_API_KEY || !runtime.CONFIRMATION_FROM) return "not_configured";
 
   const qrUrl = `${details.origin}/api/qr?code=${encodeURIComponent(details.confirmationCode)}`;

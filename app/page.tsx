@@ -238,12 +238,15 @@ export default function Home() {
       <section id="register" className="registration-layout">
         <aside className="steps-card" aria-label="Registration progress">
           <p className="step-count">Step {progress}</p>
-          {[
+          {/* `as const` so the tuples infer as [1,"..."] rather than (string|number)[].
+              Without it `number` is string|number and `step > number` fails to type check --
+              a pre-existing error in the generated source, not a porting change. */}
+          {([
             [1, "Delegate details"],
             [2, "Conference package"],
             [3, "Travel and hospitality"],
             [4, "Review and submit"],
-          ].map(([number, label]) => (
+          ] as const).map(([number, label]) => (
             <button key={number} type="button" className={`step-item ${step === number ? "active" : ""} ${step > number ? "complete" : ""}`} onClick={() => Number(number) < step && setStep(Number(number))}>
               <span>{step > number ? "✓" : number}</span>{label}
             </button>
