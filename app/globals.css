@@ -39,6 +39,14 @@ button, a { -webkit-tap-highlight-color:transparent; }
 .speaker-profile h3 { font-family:Georgia,serif; font-size:clamp(1.6rem,2.5vw,2.25rem); line-height:1.08; margin:12px 0 7px; }
 .speaker-profile strong { display:block; color:var(--gold-dark); font-size:.9rem; margin-bottom:20px; }
 .speaker-profile p { color:var(--muted); font-size:.9rem; line-height:1.7; margin:0; }
+
+/* Confirmed guest speakers. A 3-up grid of photo-above-name cards, distinct from the 2-up
+   speaker-card layout above, which is side-by-side and carries a bio paragraph. These entries
+   have no bio, so the card is sized by its photo row rather than by text. */
+.guest-heading { margin-top:68px; }
+.guest-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:22px; }
+.guest-card { display:grid; grid-template-rows:360px auto; background:var(--cream); border-top:3px solid var(--gold); overflow:hidden; }
+.guest-photo-wrap { background:#ded8cc; min-height:0; overflow:hidden; }
 .hosts-heading { margin:80px 0 32px; border-top:1px solid var(--line); padding-top:58px; }
 .hosts-heading .eyebrow { margin-bottom:16px; }
 .hosts-heading h2 { font-family:Georgia,serif; font-size:clamp(2.2rem,4vw,3.8rem); line-height:1; margin:0; }
@@ -131,6 +139,8 @@ footer span { color:#9fb0bc; }
   .event-facts,.intro-section,.registration-layout { grid-template-columns:1fr; }
   .speakers-heading { grid-template-columns:1fr; gap:18px; }
   .speaker-card { grid-template-columns:1fr; }
+  .guest-grid { grid-template-columns:1fr; }
+  .guest-card { grid-template-rows:390px; grid-template-columns:minmax(210px,.8fr) 1fr; }
   .speaker-photo-wrap { height:420px; min-height:0; }
   .intro-section { gap:20px; }
   .steps-card { position:static; }
@@ -150,6 +160,7 @@ footer span { color:#9fb0bc; }
   .event-facts { gap:18px; }
   .form-grid.two,.form-grid.three,.ticket-grid,.info-grid { grid-template-columns:1fr; }
   .speaker-grid { grid-template-columns:1fr; }
+  .guest-card { grid-template-rows:410px auto; grid-template-columns:1fr; }
   .speaker-photo-wrap { height:410px; }
   .registration-form { padding:25px 18px; }
   .registration-layout { padding:0 18px; }

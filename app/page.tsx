@@ -225,6 +225,31 @@ export default function Home() {
             </div>
           </article>
         </div>
+
+        <div className="hosts-heading guest-heading">
+          <p className="eyebrow gold">Confirmed guest speakers</p>
+          <h2>Ministry voices from Africa</h2>
+        </div>
+        <div className="guest-grid">
+          {[
+            { slug: "dr-victor-tuwani-pume", name: "Dr Victor Tuwani Pume", country: "South Africa", role: "Guest Speaker" },
+            { slug: "apostle-mufaro-maposa", name: "Apostle Mufaro Maposa", country: "Lesotho", role: "Guest Speaker" },
+            { slug: "pastors-timsimon-erica-kamani", name: "Pastors Timsimon & Erica Kamani", country: "Kenya", role: "Guest Speakers" },
+            { slug: "rev-moyo", name: "Rev Moyo", country: "South Africa", role: "Guest Speaker" },
+            { slug: "dr-thandi-ngomelo", name: "Dr Thandi Ngomelo", country: "South Africa", role: "Guest Speaker" },
+          ].map((speaker) => (
+            <article className="guest-card" key={speaker.slug}>
+              <div className="guest-photo-wrap">
+                <img className="speaker-photo" src={`/speakers/${speaker.slug}.jpg`} alt={speaker.name} />
+              </div>
+              <div className="speaker-profile">
+                <span>{speaker.role}</span>
+                <h3>{speaker.name}</h3>
+                <strong>{speaker.country}</strong>
+              </div>
+            </article>
+          ))}
+        </div>
       </section>
 
       <section className="intro-section">
