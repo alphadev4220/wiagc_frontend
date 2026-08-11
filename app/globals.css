@@ -129,6 +129,27 @@ footer span { color:#9fb0bc; }
 .email-notice { padding:12px 15px; border-radius:5px; font-size:.82rem; font-weight:700; }
 .email-notice.sent { background:#eaf7ed; color:#236735; }
 .email-notice.pending { background:#fff6dc; color:#7a5710; }
+/* Pre-launch cover. Fixed and translucent so the finished page stays visible and scrollable
+   behind it while every click lands on the scrim instead of the form. backdrop-filter does the
+   softening where supported; the white is raised in the @supports fallback below so browsers
+   without it still read as covered rather than as a faint tint over a usable form. */
+.cover-scrim { position:fixed; inset:0; z-index:50; display:grid; place-items:center; padding:24px; background:rgba(255,255,255,.8); backdrop-filter:blur(7px) saturate(.55); -webkit-backdrop-filter:blur(7px) saturate(.55); }
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))) {
+  .cover-scrim { background:rgba(255,255,255,.94); }
+}
+.cover-card { width:min(560px,100%); background:var(--paper); border-top:3px solid var(--gold); border-radius:8px; padding:clamp(30px,6vw,52px); text-align:center; box-shadow:0 26px 70px rgba(7,21,33,.22); }
+.cover-card h1 { font-family:Georgia,serif; font-size:clamp(2rem,5vw,3rem); line-height:1.04; margin:0 0 20px; }
+.cover-lead { color:var(--muted); line-height:1.7; margin:0; }
+.cover-facts { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:18px; margin:32px 0; padding:24px 0; border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
+.cover-facts dt { color:var(--muted); text-transform:uppercase; font-size:.66rem; font-weight:800; letter-spacing:.12em; margin-bottom:7px; }
+.cover-facts dd { margin:0; font-size:.86rem; font-weight:700; line-height:1.4; }
+.cover-contact { display:grid; gap:8px; color:var(--muted); font-size:.86rem; line-height:1.6; margin:0; }
+.cover-contact a { color:var(--gold-dark); font-weight:700; text-decoration:none; }
+@media (max-width:520px) {
+  .cover-facts { grid-template-columns:1fr; gap:14px; text-align:left; }
+  .cover-facts dt { margin-bottom:3px; }
+}
+
 .verify-shell { min-height:100vh; padding:30px; display:grid; place-items:center; background:linear-gradient(135deg,#06131d,#0d2a3e); }
 .verify-card { width:min(590px,100%); padding:clamp(30px,7vw,60px); background:white; text-align:center; border-radius:8px; }
 .verify-card h1 { font-family:Georgia,serif; font-size:clamp(2rem,6vw,3.2rem); }

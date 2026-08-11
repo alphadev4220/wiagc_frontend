@@ -1,7 +1,9 @@
+import { cookies } from "next/headers";
 import { getDb } from "../../../db";
 import { eq } from "drizzle-orm";
 import { registrations } from "../../../db/schema";
 import { sendConfirmationEmail } from "../../../lib/email";
+import { PREVIEW_COOKIE, registrationOpen } from "../../../lib/gate";
 
 const ticketNames: Record<string,string> = { general:"General Delegate", premium:"Premium Delegate", vip:"VIP Delegate", online:"Online Delegate" };
 
@@ -11,6 +13,17 @@ function text(value: unknown, max = 500) {
 
 export async function POST(request: Request) {
   try {
+    // The cover in app/cover.tsx is only paint. This is what actually stops a delegate being
+    // written before the office opens registration -- an overlay can be removed in devtools, and
+    // this endpoint can be POSTed to directly.
+    const preview = (await cookies()).get(PREVIEW_COOKIE)?.value === "on";
+    if (!registrationOpen() && !preview) {
+      return Response.json(
+        { error: "Registration is not open yet. Contact wiaglobal1@gmail.com to reserve a place." },
+        { status: 503 },
+      );
+    }
+
     const payload = await request.json() as Record<string, unknown>;
     const firstName = text(payload.firstName, 80);
     const lastName = text(payload.lastName, 80);
