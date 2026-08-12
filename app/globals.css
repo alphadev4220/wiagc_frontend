@@ -232,3 +232,7 @@ footer span { color:#9fb0bc; }
    cap than the 2-up cards: three columns are narrower, so the same 200px would run to far more
    lines and make the row disproportionately tall. */
 .guest-card .speaker-profile p { margin-top: 14px; max-height: 150px; }
+/* Top-align the text block in the 3-up cards. `align-self:center` is right for the 2-up cards,
+   where the text sits BESIDE a tall photo, but here it sits BELOW one -- and centring made a
+   one-line name start lower than a two-line name in the card next to it. */
+.guest-card .speaker-profile { align-self: start; }
