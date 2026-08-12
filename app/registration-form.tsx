@@ -87,6 +87,13 @@ const GUEST_SPEAKERS: Person[] = [
     bio: "Apostle Isaac Sithole is a respected Christian leader, pastor, and minister of the Gospel. He serves as Senior Pastor of Oasis of Life Family Church, where he is committed to building faith, strengthening families, and advancing the Kingdom of God. He is also actively involved in Christian leadership and initiatives that seek to bring hope, unity, and positive transformation to communities.",
   },
   {
+    // No bio supplied yet -- the card renders name and country until one arrives.
+    name: "Dr Osasuwa",
+    country: "Nigeria",
+    role: "Guest Speaker",
+    photo: "/speakers/dr-osasuwa.png",
+  },
+  {
     name: "Pastors Timsimon & Erica Kamani",
     country: "Kenya",
     role: "Guest Speakers",
