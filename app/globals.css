@@ -47,24 +47,23 @@ button, a { -webkit-tap-highlight-color:transparent; }
 /* THE STATEMENT SCROLLS. The supplied bios differ by a factor of four in length, so letting
    them size the card made every card a different height and pushed the photo out of its frame.
    Capping the paragraph and scrolling it keeps the row aligned and the photo full-bleed.
-   The gutter is reserved with padding-right so text does not sit under the scrollbar, and the
-   fade at the bottom is what tells the reader there is more below -- an overflow with no visual
-   cue just looks like a sentence that stops mid-word. */
+
+   NO FADE MASK. A gradient mask across the bottom edge was greying the last line out even once
+   the reader had scrolled to it -- so the closing words of every bio, the part that is hardest
+   to guess from context, were the least readable text on the page. The scrollbar is the
+   affordance instead: it is always visible rather than appearing on hover, so a scrollable bio
+   announces itself without covering anything.
+
+   The gutter is reserved with padding-right so text never sits underneath that bar. */
 .speaker-profile p {
   color:var(--muted); font-size:.9rem; line-height:1.7; margin:0;
   max-height:200px; overflow-y:auto; overscroll-behavior:contain;
-  padding-right:12px; scrollbar-width:thin; scrollbar-color:var(--gold) transparent;
-  -webkit-mask-image:linear-gradient(to bottom, #000 calc(100% - 22px), transparent 100%);
-          mask-image:linear-gradient(to bottom, #000 calc(100% - 22px), transparent 100%);
+  padding-right:14px; scrollbar-width:thin; scrollbar-color:var(--gold) transparent;
 }
-/* A bio short enough to fit needs no fade and no reserved gutter. :has() is supported by every
-   browser this site targets; where it is not, the only cost is a fade over text that does not
-   scroll, which is cosmetic. */
-.speaker-profile p:not(:hover) { scrollbar-color:var(--line) transparent; }
-.speaker-profile p::-webkit-scrollbar { width:5px; }
-.speaker-profile p::-webkit-scrollbar-track { background:transparent; }
-.speaker-profile p::-webkit-scrollbar-thumb { background:var(--line); border-radius:3px; }
-.speaker-profile p:hover::-webkit-scrollbar-thumb { background:var(--gold); }
+.speaker-profile p::-webkit-scrollbar { width:6px; }
+.speaker-profile p::-webkit-scrollbar-track { background:rgba(0,0,0,.05); border-radius:3px; }
+.speaker-profile p::-webkit-scrollbar-thumb { background:var(--gold); border-radius:3px; }
+.speaker-profile p::-webkit-scrollbar-thumb:hover { background:var(--gold-dark); }
 
 /* Confirmed guest speakers. A 3-up grid of photo-above-name cards, distinct from the 2-up
    speaker-card layout above, which is side-by-side. The photo row is a fixed 380px so the
