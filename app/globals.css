@@ -236,3 +236,53 @@ footer span { color:#9fb0bc; }
    where the text sits BESIDE a tall photo, but here it sits BELOW one -- and centring made a
    one-line name start lower than a two-line name in the card next to it. */
 .guest-card .speaker-profile { align-self: start; }
+
+/* ADMIN -- the conference office's view of who has registered.
+   Deliberately denser and plainer than the public page: it is a working list, read on a laptop
+   in a spreadsheet frame of mind, not a landing page. Same palette so it is recognisably the
+   same site. */
+.admin-shell { max-width:1500px; margin:auto; padding:32px 24px 80px; }
+.admin-head { display:flex; justify-content:space-between; align-items:flex-end; gap:24px; flex-wrap:wrap; margin-bottom:28px; }
+.admin-head h1 { font-family:Georgia,serif; font-size:clamp(2rem,4vw,3rem); margin:0 0 6px; }
+.admin-sub { color:var(--muted); margin:0; font-size:.9rem; }
+.admin-actions { display:flex; align-items:center; gap:18px; }
+.admin-link { color:var(--gold-dark); font-size:.85rem; font-weight:700; text-decoration:none; }
+.admin-strip { display:grid; grid-template-columns:repeat(auto-fit,minmax(132px,1fr)); gap:12px; margin-bottom:12px; }
+.admin-days { grid-template-columns:repeat(auto-fit,minmax(132px,1fr)); margin-bottom:26px; }
+.admin-stat { background:var(--cream); border-top:3px solid var(--gold); padding:14px 16px; display:grid; gap:3px; }
+.admin-stat span { font-size:.66rem; font-weight:800; text-transform:uppercase; letter-spacing:.1em; color:var(--gold-dark); }
+.admin-stat strong { font-size:1.7rem; line-height:1.1; }
+.admin-stat small { color:var(--muted); font-size:.72rem; }
+.admin-filters { display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin-bottom:16px; }
+.admin-search { flex:1 1 320px; max-width:520px; }
+.admin-select { flex:0 0 auto; width:auto; min-width:170px; }
+.admin-count { color:var(--muted); font-size:.82rem; }
+.admin-empty { color:var(--muted); background:var(--cream); padding:28px; border-left:4px solid var(--gold); }
+/* The table is wide by design -- ten columns of working data. It scrolls in its own box so the
+   PAGE never scrolls sideways, which is what makes a wide table unusable on a laptop. */
+.admin-tablewrap { overflow-x:auto; border:1px solid var(--line); border-radius:6px; background:white; }
+.admin-table { width:100%; border-collapse:collapse; font-size:.84rem; }
+.admin-table th { text-align:left; font-size:.66rem; text-transform:uppercase; letter-spacing:.09em; color:var(--muted); background:var(--cream); padding:11px 14px; white-space:nowrap; border-bottom:1px solid var(--line); }
+.admin-table td { padding:12px 14px; border-bottom:1px solid var(--line); vertical-align:top; }
+.admin-table tr.is-open td { background:#fffbef; }
+.admin-table td small { display:block; color:var(--muted); font-size:.75rem; margin-top:2px; }
+.admin-table td a { color:var(--gold-dark); text-decoration:none; }
+.admin-table code { font-size:.8rem; letter-spacing:.04em; }
+.admin-dim { color:var(--muted); }
+.admin-flag { background:#fff6dc; color:#7a5710; font-weight:700; font-size:.7rem; padding:3px 8px; border-radius:3px; white-space:nowrap; }
+.admin-pill { font-size:.7rem; font-weight:700; padding:3px 8px; border-radius:3px; white-space:nowrap; text-transform:capitalize; }
+.admin-pill.ok { background:#eaf7ed; color:#236735; }
+.admin-pill.warn { background:#fff6dc; color:#7a5710; }
+.admin-toggle { background:white; border:1px solid #aeb9bf; border-radius:4px; padding:6px 12px; font-size:.75rem; font-weight:700; cursor:pointer; white-space:nowrap; }
+.admin-toggle:hover { border-color:var(--gold-dark); color:var(--gold-dark); }
+.admin-detailrow td { background:#fffbef; }
+.admin-detail { display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:16px 26px; padding:6px 0 10px; }
+.admin-field { display:grid; gap:3px; min-width:0; }
+.admin-field.wide { grid-column:span 2; }
+.admin-field span { font-size:.64rem; font-weight:800; text-transform:uppercase; letter-spacing:.09em; color:var(--gold-dark); }
+.admin-field strong { font-weight:600; overflow-wrap:anywhere; }
+@media (max-width:700px) {
+  .admin-shell { padding:22px 16px 60px; }
+  .admin-head { align-items:flex-start; }
+  .admin-field.wide { grid-column:auto; }
+}
