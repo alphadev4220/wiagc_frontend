@@ -4,6 +4,8 @@
 // still see that the form exists and is ready, just not to use it. The page scrolls normally
 // behind this -- a fixed, non-scrollable overlay passes wheel and touch scroll through to the
 // document -- so the speakers and the form remain browsable while every click is intercepted.
+import { EVENT } from "../lib/event";
+
 export default function Cover() {
   return (
     <div className="cover-scrim" role="dialog" aria-modal="true" aria-labelledby="cover-title">
@@ -15,9 +17,9 @@ export default function Cover() {
           yet, and details entered on this page are not being recorded.
         </p>
         <dl className="cover-facts">
-          <div><dt>Dates</dt><dd>17–19 September 2026</dd></div>
-          <div><dt>Venue</dt><dd>Gallagher Convention Centre</dd></div>
-          <div><dt>Location</dt><dd>Midrand, Gauteng</dd></div>
+          <div><dt>Dates</dt><dd>{EVENT.dates}</dd></div>
+          <div><dt>Venue</dt><dd>{EVENT.venue}</dd></div>
+          <div><dt>Location</dt><dd>{EVENT.location}</dd></div>
         </dl>
         <p className="cover-contact">
           To reserve a place before registration opens, contact the office

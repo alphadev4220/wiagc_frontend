@@ -41,8 +41,8 @@ button, a { -webkit-tap-highlight-color:transparent; }
 .speaker-profile p { color:var(--muted); font-size:.9rem; line-height:1.7; margin:0; }
 
 /* Confirmed guest speakers. A 3-up grid of photo-above-name cards, distinct from the 2-up
-   speaker-card layout above, which is side-by-side and carries a bio paragraph. These entries
-   have no bio, so the card is sized by its photo row rather than by text. */
+   speaker-card layout above, which is side-by-side. The photo row is a fixed 360px so the
+   faces align across the row regardless of how long each bio runs; the text row is auto. */
 .guest-heading { margin-top:68px; }
 .guest-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:22px; }
 .guest-card { display:grid; grid-template-rows:360px auto; background:var(--cream); border-top:3px solid var(--gold); overflow:hidden; }
@@ -196,3 +196,11 @@ footer span { color:#9fb0bc; }
   .success-card { box-shadow:none; }
   .primary-button { display:none; }
 }
+
+/* A guest speaker whose photo has not been supplied. The card is normally sized by its 360px
+   photo row; without one it must fall back to being sized by its text, otherwise the grid
+   reserves an empty frame where a face should be. */
+.guest-card.no-photo { grid-template-rows: auto; }
+.guest-card.no-photo .speaker-profile { padding: 30px; }
+/* Guest bios are new -- the 3-up cards previously carried a name and country only. */
+.guest-card .speaker-profile p { margin-top: 14px; }

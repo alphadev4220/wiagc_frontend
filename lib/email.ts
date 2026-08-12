@@ -1,3 +1,5 @@
+import { EVENT, VENUE_LINE } from "./event";
+
 type EmailDetails = {
   to: string;
   fullName: string;
@@ -33,7 +35,7 @@ export async function sendConfirmationEmail(details: EmailDetails) {
             <p style="color:#a87613;font-weight:bold;text-transform:uppercase;letter-spacing:1px">Word In Action Global Conference</p>
             <h1 style="font-family:Georgia,serif">Registration confirmed</h1>
             <p>Dear ${escapeHtml(details.fullName)},</p>
-            <p>Your registration for 17–19 September 2026 at Gallagher Convention Centre, Midrand, has been recorded.</p>
+            <p>Your registration for ${EVENT.dates} at ${VENUE_LINE} has been recorded.</p>
             <div style="background:#071521;color:#fff;padding:22px;text-align:center;margin:25px 0">
               <small>CONFIRMATION NUMBER</small><br><strong style="font-size:25px;color:#d7a431">${details.confirmationCode}</strong>
             </div>

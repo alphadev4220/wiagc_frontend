@@ -2,6 +2,97 @@
 
 import { FormEvent, useMemo, useState } from "react";
 import { countries } from "../lib/countries";
+import { EVENT, VENUE_LINE } from "../lib/event";
+
+// SPEAKERS AND HOSTS.
+//
+// Held as data rather than repeated markup: the bios arrived as one block of copy covering
+// people across all three groups, and editing six near-identical <article> blocks by hand is
+// how one of them ends up with another person's paragraph. `photo` is a filename under
+// /public -- an entry without one renders text-only rather than a broken image.
+type Person = {
+  name: string;
+  country?: string;
+  role: string;
+  photo?: string;
+  bio?: string;
+};
+
+const KEY_SPEAKERS: Person[] = [
+  {
+    name: "Pastor Robert Kayanja",
+    country: "Uganda",
+    role: "Key Guest Speaker",
+    photo: "/speakers/1000199588.jpg",
+    bio: "Pastor Robert Kayanja is a renowned Ugandan pastor, author, and global Christian leader. He is the founder and Senior Pastor of Miracle Centre Cathedral in Kampala and the founder of Robert Kayanja Ministries. For nearly four decades, he has preached the Gospel across nations, inspiring people through his message of faith, hope, restoration, and the transforming power of God.",
+  },
+  {
+    name: "Dr Francis Myles",
+    country: "USA",
+    role: "Key Guest Speaker",
+    photo: "/speakers/1000202498.jpg",
+    bio: "Dr Francis Myles is an internationally recognised apostle, speaker, author, and teacher of the Word. He is known for his teaching on the Order of Melchizedek, healing, prophecy, faith, and Kingdom leadership. A bestselling author of more than 12 books, Dr Myles is also the founder of the Order of Melchizedek Supernatural School of Ministry and co-founder of Just Cause Foundation, which supports vulnerable communities in Africa.",
+  },
+];
+
+const HOSTS: Person[] = [
+  {
+    name: "Apostle Samuel Fidelis",
+    country: "South Africa",
+    role: "Conference Host",
+    photo: "/hosts/apostle-samuel-fidelis.jpg",
+    bio: "Host of the Word In Action Global Conference and leader of the gathering.",
+  },
+  {
+    name: "Dr Sam Zungu-Fidelis, PhD",
+    country: "South Africa",
+    role: "Conference Host",
+    photo: "/hosts/dr-sam-zungu-fidelis.jpg",
+    bio: "Dr Sam Zungu-Fidelis, PhD is a medical doctor, mental health and wellness specialist, researcher, author, and founder of Mental Wealth Conversations. She is a passionate advocate for shifting the conversation from mental health to mental wealth, empowering leaders, families, and communities to thrive. Dr Sam is also the author of Mental Wealth and other wellness journals.",
+  },
+];
+
+const GUEST_SPEAKERS: Person[] = [
+  {
+    name: "Dr Victor Tuwani Phume",
+    country: "South Africa",
+    role: "Guest Speaker",
+    photo: "/speakers/dr-victor-tuwani-pume.jpg",
+    bio: "Dr Victor Tuwani Phume is a South African theologian, reverend, author, entrepreneur, and media leader. He holds a PhD in Leadership and Management and has authored numerous publications. He is the founder of Zallywood Media Group, including Tshwane TV and GauTV, and has dedicated much of his work to advancing faith, leadership, media, and community transformation.",
+  },
+  {
+    name: "Apostle Mufaro Maposa",
+    country: "Lesotho",
+    role: "Guest Speaker",
+    photo: "/speakers/apostle-mufaro-maposa.jpg",
+    bio: "Apostle Mufaro Maposa is an apostle, prophet, teacher, and Christian leader based in Lesotho. He is the founder and General Overseer of New Testament Church and the Manifest Sons of God Movement, established in 2006. Through his ministry, he is committed to equipping believers, advancing the Gospel, and helping people walk in the fullness of their identity and faith in Christ.",
+  },
+  {
+    // No photo supplied yet and no country stated in the bio -- both omitted rather than
+    // guessed, since this is a real person's public profile.
+    name: "Apostle Isaac Sithole",
+    role: "Guest Speaker",
+    bio: "Apostle Isaac Sithole is a respected Christian leader, pastor, and minister of the Gospel. He serves as Senior Pastor of Oasis of Life Family Church, where he is committed to building faith, strengthening families, and advancing the Kingdom of God. He is also actively involved in Christian leadership and initiatives that seek to bring hope, unity, and positive transformation to communities.",
+  },
+  {
+    name: "Pastors Timsimon & Erica Kamani",
+    country: "Kenya",
+    role: "Guest Speakers",
+    photo: "/speakers/pastors-timsimon-erica-kamani.jpg",
+  },
+  {
+    name: "Rev Moyo",
+    country: "South Africa",
+    role: "Guest Speaker",
+    photo: "/speakers/rev-moyo.jpg",
+  },
+  {
+    name: "Dr Thandi Ngomelo",
+    country: "South Africa",
+    role: "Guest Speaker",
+    photo: "/speakers/dr-thandi-ngomelo.jpg",
+  },
+];
 
 type Registration = {
   confirmationCode: string;
@@ -134,8 +225,8 @@ export default function RegistrationForm() {
           <p className={`email-notice ${registration.emailStatus === "sent" ? "sent" : "pending"}`}>{registration.emailStatus === "sent" ? "A confirmation email with this QR code has been sent." : "Your registration is secure. Email delivery is awaiting conference sender activation."}</p>
           <dl className="summary-list">
             <div><dt>Package</dt><dd>{ticketOptions.find((item) => item.value === registration.ticketType)?.title}</dd></div>
-            <div><dt>Dates</dt><dd>17–19 September 2026</dd></div>
-            <div><dt>Venue</dt><dd>Gallagher Convention Centre, Midrand</dd></div>
+            <div><dt>Dates</dt><dd>{EVENT.dates}</dd></div>
+            <div><dt>Venue</dt><dd>{VENUE_LINE}</dd></div>
           </dl>
           <p className="small-copy">Present your QR code at conference check-in. Keep your confirmation number for payment, accommodation and transport communication.</p>
           <button className="primary-button" onClick={() => window.print()}>Save or print confirmation</button>
@@ -156,13 +247,13 @@ export default function RegistrationForm() {
         </nav>
         <div className="hero-content">
           <p className="ministry-line">Churches in the Cities presents</p>
-          <p className="eyebrow">17–19 September 2026 · Midrand, South Africa</p>
+          <p className="eyebrow">{EVENT.dates} · {EVENT.region}</p>
           <h1>Word In Action<br />Global Conference</h1>
           <p className="theme">The Gathering of the Apostolic People</p>
           <div className="event-facts">
-            <div><span>Date</span><strong>17–19 September 2026</strong></div>
-            <div><span>Venue</span><strong>Gallagher Convention Centre</strong></div>
-            <div><span>Location</span><strong>Midrand, Gauteng</strong></div>
+            <div><span>Date</span><strong>{EVENT.dates}</strong></div>
+            <div><span>Venue</span><strong>{EVENT.venue}</strong></div>
+            <div><span>Location</span><strong>{EVENT.location}</strong></div>
           </div>
         </div>
       </header>
@@ -174,56 +265,38 @@ export default function RegistrationForm() {
           <p>Two international ministry leaders will join the Word In Action Global Conference for apostolic teaching, ministry and a life-changing encounter.</p>
         </div>
         <div className="speaker-grid">
-          <article className="speaker-card">
-            <div className="speaker-photo-wrap">
-              <img className="speaker-photo" src="/speakers/1000199588.jpg" alt="Pastor Robert Kayanja" />
-            </div>
-            <div className="speaker-profile">
-              <span>Key Guest Speaker</span>
-              <h3>Pastor Robert Kayanja</h3>
-              <strong>Uganda</strong>
-              <p>A Christian leader and minister joining the conference from Uganda. His session will form part of the conference’s apostolic teaching and ministry programme.</p>
-            </div>
-          </article>
-          <article className="speaker-card">
-            <div className="speaker-photo-wrap">
-              <img className="speaker-photo" src="/speakers/1000202498.jpg" alt="Dr Francis Myles" />
-            </div>
-            <div className="speaker-profile">
-              <span>Key Guest Speaker</span>
-              <h3>Dr Francis Myles</h3>
-              <strong>USA</strong>
-              <p>A Christian leader, author and minister joining the conference from the United States. His session will contribute to the conference’s apostolic teaching and global ministry focus.</p>
-            </div>
-          </article>
+          {KEY_SPEAKERS.map((person) => (
+            <article className="speaker-card" key={person.name}>
+              <div className="speaker-photo-wrap">
+                <img className="speaker-photo" src={person.photo} alt={person.name} />
+              </div>
+              <div className="speaker-profile">
+                <span>{person.role}</span>
+                <h3>{person.name}</h3>
+                <strong>{person.country}</strong>
+                <p>{person.bio}</p>
+              </div>
+            </article>
+          ))}
         </div>
         <div className="hosts-heading">
           <p className="eyebrow gold">Conference hosts</p>
           <h2>Welcoming the global gathering</h2>
         </div>
         <div className="speaker-grid host-grid">
-          <article className="speaker-card host-card">
-            <div className="speaker-photo-wrap">
-              <img className="speaker-photo" src="/hosts/apostle-samuel-fidelis.jpg" alt="Apostle Samuel Fidelis" />
-            </div>
-            <div className="speaker-profile">
-              <span>Conference Host</span>
-              <h3>Apostle Samuel Fidelis</h3>
-              <strong>South Africa</strong>
-              <p>Host of the Word In Action Global Conference and leader of the gathering.</p>
-            </div>
-          </article>
-          <article className="speaker-card host-card">
-            <div className="speaker-photo-wrap">
-              <img className="speaker-photo" src="/hosts/dr-sam-zungu-fidelis.jpg" alt="Dr Sam Zungu-Fidelis" />
-            </div>
-            <div className="speaker-profile">
-              <span>Conference Host</span>
-              <h3>Dr Sam Zungu-Fidelis</h3>
-              <strong>South Africa</strong>
-              <p>Host of the Word In Action Global Conference and partner in welcoming delegates from across the world.</p>
-            </div>
-          </article>
+          {HOSTS.map((person) => (
+            <article className="speaker-card host-card" key={person.name}>
+              <div className="speaker-photo-wrap">
+                <img className="speaker-photo" src={person.photo} alt={person.name} />
+              </div>
+              <div className="speaker-profile">
+                <span>{person.role}</span>
+                <h3>{person.name}</h3>
+                <strong>{person.country}</strong>
+                <p>{person.bio}</p>
+              </div>
+            </article>
+          ))}
         </div>
 
         <div className="hosts-heading guest-heading">
@@ -231,21 +304,20 @@ export default function RegistrationForm() {
           <h2>Ministry voices from Africa</h2>
         </div>
         <div className="guest-grid">
-          {[
-            { slug: "dr-victor-tuwani-pume", name: "Dr Victor Tuwani Pume", country: "South Africa", role: "Guest Speaker" },
-            { slug: "apostle-mufaro-maposa", name: "Apostle Mufaro Maposa", country: "Lesotho", role: "Guest Speaker" },
-            { slug: "pastors-timsimon-erica-kamani", name: "Pastors Timsimon & Erica Kamani", country: "Kenya", role: "Guest Speakers" },
-            { slug: "rev-moyo", name: "Rev Moyo", country: "South Africa", role: "Guest Speaker" },
-            { slug: "dr-thandi-ngomelo", name: "Dr Thandi Ngomelo", country: "South Africa", role: "Guest Speaker" },
-          ].map((speaker) => (
-            <article className="guest-card" key={speaker.slug}>
-              <div className="guest-photo-wrap">
-                <img className="speaker-photo" src={`/speakers/${speaker.slug}.jpg`} alt={speaker.name} />
-              </div>
+          {GUEST_SPEAKERS.map((person) => (
+            /* `no-photo` drops the image row entirely rather than leaving a grey placeholder
+               where a face should be -- an empty frame reads as a broken page. */
+            <article className={`guest-card${person.photo ? "" : " no-photo"}`} key={person.name}>
+              {person.photo && (
+                <div className="guest-photo-wrap">
+                  <img className="speaker-photo" src={person.photo} alt={person.name} />
+                </div>
+              )}
               <div className="speaker-profile">
-                <span>{speaker.role}</span>
-                <h3>{speaker.name}</h3>
-                <strong>{speaker.country}</strong>
+                <span>{person.role}</span>
+                <h3>{person.name}</h3>
+                {person.country && <strong>{person.country}</strong>}
+                {person.bio && <p>{person.bio}</p>}
               </div>
             </article>
           ))}
@@ -383,7 +455,7 @@ export default function RegistrationForm() {
         </div>
       </section>
 
-      <footer><strong>WIAGC · Churches in the Cities</strong><span>17–19 September 2026 · Gallagher Convention Centre, Midrand</span></footer>
+      <footer><strong>WIAGC · Churches in the Cities</strong><span>{EVENT.dates} · {VENUE_LINE}</span></footer>
     </main>
   );
 }
