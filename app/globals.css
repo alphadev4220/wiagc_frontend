@@ -31,9 +31,15 @@ button, a { -webkit-tap-highlight-color:transparent; }
 .speakers-heading h2 { font-family:Georgia,serif; font-size:clamp(2.4rem,5vw,4.5rem); line-height:1; margin:0; }
 .speakers-heading > p:last-child { color:var(--muted); line-height:1.75; margin:0; }
 .speaker-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:26px; }
-.speaker-card { display:grid; grid-template-columns:minmax(180px, .78fr) 1fr; background:var(--cream); border-top:3px solid var(--gold); min-height:390px; overflow:hidden; }
-.speaker-photo-wrap { background:#ded8cc; min-height:390px; overflow:hidden; }
-.speaker-photo { display:block; width:100%; height:100%; object-fit:cover; object-position:center top; }
+.speaker-card { display:grid; grid-template-columns:minmax(210px, .95fr) 1fr; background:var(--cream); border-top:3px solid var(--gold); min-height:390px; overflow:hidden; }
+/* Transparent, not a grey plate: with object-fit:contain the frame is wider than the photo, so
+   the leftover space has to read as the card, not as an unloaded image. */
+.speaker-photo-wrap { background:transparent; min-height:390px; overflow:hidden; }
+/* CONTAIN, NOT COVER. The supplied portraits run from ratio 0.46 to 1.17 -- there is no single
+   crop box that suits both, and `cover` was cutting the sides off the tall ones and the heads
+   off the wide ones. Contain shows every photo whole at the cost of some empty space beside the
+   narrow ones, which is the right trade for portraits of named people. */
+.speaker-photo { display:block; width:100%; height:100%; object-fit:contain; object-position:center; }
 .speaker-profile { padding:34px 30px; align-self:center; }
 .speaker-profile span { display:block; color:var(--gold-dark); text-transform:uppercase; letter-spacing:.12em; font-size:.68rem; font-weight:800; }
 .speaker-profile h3 { font-family:Georgia,serif; font-size:clamp(1.6rem,2.5vw,2.25rem); line-height:1.08; margin:12px 0 7px; }
@@ -41,12 +47,12 @@ button, a { -webkit-tap-highlight-color:transparent; }
 .speaker-profile p { color:var(--muted); font-size:.9rem; line-height:1.7; margin:0; }
 
 /* Confirmed guest speakers. A 3-up grid of photo-above-name cards, distinct from the 2-up
-   speaker-card layout above, which is side-by-side. The photo row is a fixed 360px so the
+   speaker-card layout above, which is side-by-side. The photo row is a fixed 380px so the
    faces align across the row regardless of how long each bio runs; the text row is auto. */
 .guest-heading { margin-top:68px; }
 .guest-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:22px; }
-.guest-card { display:grid; grid-template-rows:360px auto; background:var(--cream); border-top:3px solid var(--gold); overflow:hidden; }
-.guest-photo-wrap { background:#ded8cc; min-height:0; overflow:hidden; }
+.guest-card { display:grid; grid-template-rows:380px auto; background:var(--cream); border-top:3px solid var(--gold); overflow:hidden; }
+.guest-photo-wrap { background:transparent; min-height:0; overflow:hidden; }
 .hosts-heading { margin:80px 0 32px; border-top:1px solid var(--line); padding-top:58px; }
 .hosts-heading .eyebrow { margin-bottom:16px; }
 .hosts-heading h2 { font-family:Georgia,serif; font-size:clamp(2.2rem,4vw,3.8rem); line-height:1; margin:0; }
