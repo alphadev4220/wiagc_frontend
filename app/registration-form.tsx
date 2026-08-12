@@ -77,13 +77,13 @@ const GUEST_SPEAKERS: Person[] = [
     bio: "Apostle Mufaro Maposa is an apostle, prophet, teacher, and Christian leader based in Lesotho. He is the founder and General Overseer of New Testament Church and the Manifest Sons of God Movement, established in 2006. Through his ministry, he is committed to equipping believers, advancing the Gospel, and helping people walk in the fullness of their identity and faith in Christ.",
   },
   {
-    // Billed as Apostle Splasher. His full name still opens the bio below, so nothing is lost by
-    // leading with the name he is known by. The photo keeps its original filename -- it is never
-    // shown, and renaming it would break the file for no gain.
-    name: "Apostle Splasher",
+    // Photo replaced 2026-08-12. The previous file showed a visibly DIFFERENT man -- it was the
+    // portrait supplied under the name "Apostle Splasher" and is kept at
+    // /speakers/apostle-splasher.jpg in case it belongs to someone who still needs a card.
+    name: "Apostle Isaac Sithole",
     country: "South Africa",
     role: "Guest Speaker",
-    photo: "/speakers/apostle-isaac-sithole.jpg",
+    photo: "/speakers/apostle-isaac-sithole.png",
     bio: "Apostle Isaac Sithole is a respected Christian leader, pastor, and minister of the Gospel. He serves as Senior Pastor of Oasis of Life Family Church, where he is committed to building faith, strengthening families, and advancing the Kingdom of God. He is also actively involved in Christian leadership and initiatives that seek to bring hope, unity, and positive transformation to communities.",
   },
   {
