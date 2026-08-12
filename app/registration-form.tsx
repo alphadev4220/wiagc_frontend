@@ -80,9 +80,8 @@ const GUEST_SPEAKERS: Person[] = [
     // Billed as Apostle Splasher. His full name still opens the bio below, so nothing is lost by
     // leading with the name he is known by. The photo keeps its original filename -- it is never
     // shown, and renaming it would break the file for no gain.
-    // Country still omitted rather than guessed: the supplied bio does not state one, and this
-    // is a real person's public profile.
     name: "Apostle Splasher",
+    country: "South Africa",
     role: "Guest Speaker",
     photo: "/speakers/apostle-isaac-sithole.jpg",
     bio: "Apostle Isaac Sithole is a respected Christian leader, pastor, and minister of the Gospel. He serves as Senior Pastor of Oasis of Life Family Church, where he is committed to building faith, strengthening families, and advancing the Kingdom of God. He is also actively involved in Christian leadership and initiatives that seek to bring hope, unity, and positive transformation to communities.",
@@ -95,7 +94,7 @@ const GUEST_SPEAKERS: Person[] = [
   },
   {
     name: "Rev Moyo",
-    country: "South Africa",
+    country: "Bulawayo, Zimbabwe",
     role: "Guest Speaker",
     photo: "/speakers/rev-moyo.jpg",
   },
