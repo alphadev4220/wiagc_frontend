@@ -32,19 +32,39 @@ button, a { -webkit-tap-highlight-color:transparent; }
 .speakers-heading > p:last-child { color:var(--muted); line-height:1.75; margin:0; }
 .speaker-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:26px; }
 .speaker-card { display:grid; grid-template-columns:minmax(210px, .95fr) 1fr; background:var(--cream); border-top:3px solid var(--gold); min-height:390px; overflow:hidden; }
-/* Transparent, not a grey plate: with object-fit:contain the frame is wider than the photo, so
-   the leftover space has to read as the card, not as an unloaded image. */
-.speaker-photo-wrap { background:transparent; min-height:390px; overflow:hidden; }
-/* CONTAIN, NOT COVER. The supplied portraits run from ratio 0.46 to 1.17 -- there is no single
-   crop box that suits both, and `cover` was cutting the sides off the tall ones and the heads
-   off the wide ones. Contain shows every photo whole at the cost of some empty space beside the
-   narrow ones, which is the right trade for portraits of named people. */
-.speaker-photo { display:block; width:100%; height:100%; object-fit:contain; object-position:center; }
-.speaker-profile { padding:34px 30px; align-self:center; }
+.speaker-photo-wrap { background:#ded8cc; min-height:390px; overflow:hidden; }
+/* The photo FILLS its frame -- no cream margin above or below it. That only works because the
+   bio below scrolls: the card height is now set by the photo rather than by whichever bio
+   happens to be longest, so a 400-word paragraph can no longer stretch the card and strand the
+   image in the middle of it.
+   `center top` rather than `center`: the portraits vary in ratio, and when a crop has to lose
+   something it must be the bottom of the frame, never the face. */
+.speaker-photo { display:block; width:100%; height:100%; object-fit:cover; object-position:center top; }
+.speaker-profile { padding:34px 30px; align-self:center; min-width:0; }
 .speaker-profile span { display:block; color:var(--gold-dark); text-transform:uppercase; letter-spacing:.12em; font-size:.68rem; font-weight:800; }
 .speaker-profile h3 { font-family:Georgia,serif; font-size:clamp(1.6rem,2.5vw,2.25rem); line-height:1.08; margin:12px 0 7px; }
 .speaker-profile strong { display:block; color:var(--gold-dark); font-size:.9rem; margin-bottom:20px; }
-.speaker-profile p { color:var(--muted); font-size:.9rem; line-height:1.7; margin:0; }
+/* THE STATEMENT SCROLLS. The supplied bios differ by a factor of four in length, so letting
+   them size the card made every card a different height and pushed the photo out of its frame.
+   Capping the paragraph and scrolling it keeps the row aligned and the photo full-bleed.
+   The gutter is reserved with padding-right so text does not sit under the scrollbar, and the
+   fade at the bottom is what tells the reader there is more below -- an overflow with no visual
+   cue just looks like a sentence that stops mid-word. */
+.speaker-profile p {
+  color:var(--muted); font-size:.9rem; line-height:1.7; margin:0;
+  max-height:200px; overflow-y:auto; overscroll-behavior:contain;
+  padding-right:12px; scrollbar-width:thin; scrollbar-color:var(--gold) transparent;
+  -webkit-mask-image:linear-gradient(to bottom, #000 calc(100% - 22px), transparent 100%);
+          mask-image:linear-gradient(to bottom, #000 calc(100% - 22px), transparent 100%);
+}
+/* A bio short enough to fit needs no fade and no reserved gutter. :has() is supported by every
+   browser this site targets; where it is not, the only cost is a fade over text that does not
+   scroll, which is cosmetic. */
+.speaker-profile p:not(:hover) { scrollbar-color:var(--line) transparent; }
+.speaker-profile p::-webkit-scrollbar { width:5px; }
+.speaker-profile p::-webkit-scrollbar-track { background:transparent; }
+.speaker-profile p::-webkit-scrollbar-thumb { background:var(--line); border-radius:3px; }
+.speaker-profile p:hover::-webkit-scrollbar-thumb { background:var(--gold); }
 
 /* Confirmed guest speakers. A 3-up grid of photo-above-name cards, distinct from the 2-up
    speaker-card layout above, which is side-by-side. The photo row is a fixed 380px so the
@@ -203,10 +223,12 @@ footer span { color:#9fb0bc; }
   .primary-button { display:none; }
 }
 
-/* A guest speaker whose photo has not been supplied. The card is normally sized by its 360px
+/* A guest speaker whose photo has not been supplied. The card is normally sized by its 380px
    photo row; without one it must fall back to being sized by its text, otherwise the grid
    reserves an empty frame where a face should be. */
 .guest-card.no-photo { grid-template-rows: auto; }
 .guest-card.no-photo .speaker-profile { padding: 30px; }
-/* Guest bios are new -- the 3-up cards previously carried a name and country only. */
-.guest-card .speaker-profile p { margin-top: 14px; }
+/* Guest bios are new -- the 3-up cards previously carried a name and country only. A tighter
+   cap than the 2-up cards: three columns are narrower, so the same 200px would run to far more
+   lines and make the row disproportionately tall. */
+.guest-card .speaker-profile p { margin-top: 14px; max-height: 150px; }
