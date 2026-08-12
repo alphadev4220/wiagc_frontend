@@ -5,7 +5,7 @@
 // page metadata and the confirmation email. Six independent edits is how a site ends up sending
 // delegates to the old address in an email while the website shows the new one.
 export const EVENT = {
-  dates: "17–19 September 2026",
+  dates: "16–19 September 2026",
   venue: "White Tent, Wakanda Village",
   location: "Sandton Market, next to Sandton City Mall",
   region: "Sandton, South Africa",

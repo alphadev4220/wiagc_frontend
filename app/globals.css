@@ -130,7 +130,7 @@ label.full { grid-column:1/-1; }
 .primary-button:disabled { opacity:.6; cursor:wait; }
 .secondary-button { background:white; border-color:#aeb9bf; color:var(--ink); }
 .information-section { background:var(--cream); padding:85px max(32px,calc((100vw - 1116px)/2)); }
-.info-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:22px; }
+.info-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:22px; }
 .info-grid article { background:var(--paper); border-top:3px solid var(--gold); padding:25px; }
 .info-grid span { color:var(--gold-dark); font-weight:800; }
 .info-grid h3 { font-family:Georgia,serif; font-size:1.25rem; }

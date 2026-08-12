@@ -13,10 +13,19 @@ import { EVENT, VENUE_LINE } from "../lib/event";
 type Person = {
   name: string;
   country?: string;
+  /** A name this person is also known by, shown beside the country. */
+  aka?: string;
   role: string;
   photo?: string;
   bio?: string;
 };
+
+/** The gold line under a name. Country and alias share it rather than stacking two blocks,
+ *  which would double the margin below the heading and read as two separate facts. */
+function Subline({ person }: { person: Person }) {
+  const parts = [person.country, person.aka ? `also known as ${person.aka}` : ""].filter(Boolean);
+  return parts.length ? <strong>{parts.join(" · ")}</strong> : null;
+}
 
 const KEY_SPEAKERS: Person[] = [
   {
@@ -71,6 +80,7 @@ const GUEST_SPEAKERS: Person[] = [
     // Country still omitted rather than guessed -- the supplied bio does not state one, and
     // this is a real person's public profile.
     name: "Apostle Isaac Sithole",
+    aka: "Apostle Splasher",
     role: "Guest Speaker",
     photo: "/speakers/apostle-isaac-sithole.jpg",
     bio: "Apostle Isaac Sithole is a respected Christian leader, pastor, and minister of the Gospel. He serves as Senior Pastor of Oasis of Life Family Church, where he is committed to building faith, strengthening families, and advancing the Kingdom of God. He is also actively involved in Christian leadership and initiatives that seek to bring hope, unity, and positive transformation to communities.",
@@ -95,6 +105,13 @@ const GUEST_SPEAKERS: Person[] = [
   },
 ];
 
+// The conference ran 17-19 September until 2026-08-12, when a fourth day was added at the front.
+// Declared once and used for both the default selection and the checkbox row: when those two
+// lists were written out separately, adding a day meant remembering to edit both, and missing
+// one silently drops that day from every new registration's default.
+// The same strings key the per-day counts in app/admin/registrations-view.tsx.
+const CONFERENCE_DAYS = ["16 September", "17 September", "18 September", "19 September"];
+
 type Registration = {
   confirmationCode: string;
   fullName: string;
@@ -105,7 +122,7 @@ type Registration = {
 };
 
 const ticketOptions = [
-  { value: "general", title: "General Delegate", text: "Conference access for all three days" },
+  { value: "general", title: "General Delegate", text: "Conference access for all four days" },
   { value: "premium", title: "Premium Delegate", text: "Conference access plus reserved seating and daily refreshments" },
   { value: "vip", title: "VIP Delegate", text: "Priority seating, VIP hospitality and selected speaker sessions" },
   { value: "online", title: "Online Delegate", text: "Livestream access for remote delegates" },
@@ -122,7 +139,7 @@ const initialForm = {
   churchOrganisation: "",
   role: "",
   ticketType: "general",
-  attendanceDays: ["17 September", "18 September", "19 September"],
+  attendanceDays: [...CONFERENCE_DAYS],
   accommodation: "no",
   roomType: "",
   checkIn: "",
@@ -274,7 +291,7 @@ export default function RegistrationForm() {
               <div className="speaker-profile">
                 <span>{person.role}</span>
                 <h3>{person.name}</h3>
-                <strong>{person.country}</strong>
+                <Subline person={person} />
                 <p>{person.bio}</p>
               </div>
             </article>
@@ -293,7 +310,7 @@ export default function RegistrationForm() {
               <div className="speaker-profile">
                 <span>{person.role}</span>
                 <h3>{person.name}</h3>
-                <strong>{person.country}</strong>
+                <Subline person={person} />
                 <p>{person.bio}</p>
               </div>
             </article>
@@ -317,7 +334,7 @@ export default function RegistrationForm() {
               <div className="speaker-profile">
                 <span>{person.role}</span>
                 <h3>{person.name}</h3>
-                {person.country && <strong>{person.country}</strong>}
+                <Subline person={person} />
                 {person.bio && <p>{person.bio}</p>}
               </div>
             </article>
@@ -391,7 +408,7 @@ export default function RegistrationForm() {
               </div>
               <h3>Attendance days</h3>
               <div className="check-row">
-                {["17 September", "18 September", "19 September"].map((day) => <label key={day}><input type="checkbox" checked={form.attendanceDays.includes(day)} onChange={() => toggleDay(day)} />{day}</label>)}
+                {CONFERENCE_DAYS.map((day) => <label key={day}><input type="checkbox" checked={form.attendanceDays.includes(day)} onChange={() => toggleDay(day)} />{day}</label>)}
               </div>
             </fieldset>
           )}
@@ -452,7 +469,6 @@ export default function RegistrationForm() {
           <article><span>01</span><h3>Registration</h3><p>Each delegate receives a unique confirmation number. Bring the number and identification to conference check-in.</p></article>
           <article><span>02</span><h3>Accommodation</h3><p>Hotel options and negotiated rates will be sent after the conference office reviews your request.</p></article>
           <article><span>03</span><h3>Transport</h3><p>Airport and hotel shuttle schedules depend on submitted flight and accommodation details.</p></article>
-          <article><span>04</span><h3>Payment</h3><p>Registration fees and approved payment instructions will follow. Do not pay an unverified account.</p></article>
         </div>
       </section>
 

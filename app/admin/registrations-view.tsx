@@ -43,7 +43,9 @@ export type Row = {
 const TICKETS: Record<string, string> = {
   general: "General", premium: "Premium", vip: "VIP", online: "Online",
 };
-const DAYS = ["17 September", "18 September", "19 September"];
+// Must match CONFERENCE_DAYS in the registration form -- the per-day counts are keyed on
+// these exact strings, so a day missing here is a column silently absent from the summary.
+const DAYS = ["16 September", "17 September", "18 September", "19 September"];
 
 /** attendance_days is stored as a JSON array in a text column; a bad row must not blank the page. */
 function days(row: Row): string[] {
