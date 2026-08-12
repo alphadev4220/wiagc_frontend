@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { integer, sqliteTable, text, uniqueIndex } from "drizzle-orm/sqlite-core";
+import { blob, integer, sqliteTable, text, uniqueIndex } from "drizzle-orm/sqlite-core";
 
 export const registrations = sqliteTable("registrations", {
   id: integer("id").primaryKey({ autoIncrement: true }),
@@ -39,3 +39,28 @@ export const registrations = sqliteTable("registrations", {
 }, (table) => [
   uniqueIndex("registrations_confirmation_code_unique").on(table.confirmationCode),
 ]);
+
+// SPEAKERS AND HOSTS, editable from /admin.
+//
+// These used to be three hardcoded arrays in the registration form, so adding a guest speaker
+// meant a code change, a build and a restart. The conference office needs to do it themselves.
+//
+// PHOTOS ARE STORED HERE AS BYTES, not as files under public/. Next snapshots public/ at build
+// time and returns 404 for anything written there afterwards (verified), so an uploaded file
+// would simply not be served. Keeping the bytes in SQLite also means the whole site's content is
+// one file to back up, with no orphaned images. The originally shipped portraits keep their
+// public/ paths -- they ARE in the build -- which is why both columns exist.
+export const speakers = sqliteTable("speakers", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  // "key" (key guest speakers), "host" (conference hosts), "guest" (confirmed guest speakers)
+  group: text("group").notNull().default("guest"),
+  name: text("name").notNull(),
+  country: text("country").notNull().default(""),
+  role: text("role").notNull().default("Guest Speaker"),
+  bio: text("bio").notNull().default(""),
+  photoPath: text("photo_path").notNull().default(""),
+  photoData: blob("photo_data", { mode: "buffer" }),
+  photoType: text("photo_type").notNull().default(""),
+  sortOrder: integer("sort_order").notNull().default(0),
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});

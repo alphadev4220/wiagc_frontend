@@ -3,116 +3,15 @@
 import { FormEvent, useMemo, useState } from "react";
 import { countries } from "../lib/countries";
 import { EVENT, VENUE_LINE } from "../lib/event";
+import { photoUrl, type Speaker } from "../lib/speakers";
 
-// SPEAKERS AND HOSTS.
-//
-// Held as data rather than repeated markup: the bios arrived as one block of copy covering
-// people across all three groups, and editing six near-identical <article> blocks by hand is
-// how one of them ends up with another person's paragraph. `photo` is a filename under
-// /public -- an entry without one renders text-only rather than a broken image.
-type Person = {
-  name: string;
-  country?: string;
-  /** A name this person is also known by, shown beside the country. */
-  aka?: string;
-  role: string;
-  photo?: string;
-  bio?: string;
-};
-
-/** The gold line under a name. Country and alias share it rather than stacking two blocks,
- *  which would double the margin below the heading and read as two separate facts. */
-function Subline({ person }: { person: Person }) {
-  const parts = [person.country, person.aka ? `also known as ${person.aka}` : ""].filter(Boolean);
-  return parts.length ? <strong>{parts.join(" · ")}</strong> : null;
+/** The gold line under a name -- country, or nothing when none is recorded. */
+function Subline({ person }: { person: Speaker }) {
+  return person.country ? <strong>{person.country}</strong> : null;
 }
 
-const KEY_SPEAKERS: Person[] = [
-  {
-    name: "Pastor Robert Kayanja",
-    country: "Uganda",
-    role: "Key Guest Speaker",
-    photo: "/speakers/1000199588.jpg",
-    bio: "Pastor Robert Kayanja is a renowned Ugandan pastor, author, and global Christian leader. He is the founder and Senior Pastor of Miracle Centre Cathedral in Kampala and the founder of Robert Kayanja Ministries. For nearly four decades, he has preached the Gospel across nations, inspiring people through his message of faith, hope, restoration, and the transforming power of God.",
-  },
-  {
-    name: "Dr Francis Myles",
-    country: "USA",
-    role: "Key Guest Speaker",
-    photo: "/speakers/1000202498.jpg",
-    bio: "Dr Francis Myles is an internationally recognised apostle, speaker, author, and teacher of the Word. He is known for his teaching on the Order of Melchizedek, healing, prophecy, faith, and Kingdom leadership. A bestselling author of more than 12 books, Dr Myles is also the founder of the Order of Melchizedek Supernatural School of Ministry and co-founder of Just Cause Foundation, which supports vulnerable communities in Africa.",
-  },
-];
-
-const HOSTS: Person[] = [
-  {
-    name: "Apostle Samuel Fidelis",
-    country: "South Africa",
-    role: "Conference Host",
-    photo: "/hosts/apostle-samuel-fidelis.jpg",
-    bio: "Host of the Word In Action Global Conference and leader of the gathering.",
-  },
-  {
-    name: "Dr Sam Zungu-Fidelis, PhD",
-    country: "South Africa",
-    role: "Conference Host",
-    photo: "/hosts/dr-sam-zungu-fidelis.jpg",
-    bio: "Dr Sam Zungu-Fidelis, PhD is a medical doctor, mental health and wellness specialist, researcher, author, and founder of Mental Wealth Conversations. She is a passionate advocate for shifting the conversation from mental health to mental wealth, empowering leaders, families, and communities to thrive. Dr Sam is also the author of Mental Wealth and other wellness journals.",
-  },
-];
-
-const GUEST_SPEAKERS: Person[] = [
-  {
-    name: "Dr Victor Tuwani Phume",
-    country: "South Africa",
-    role: "Guest Speaker",
-    photo: "/speakers/dr-victor-tuwani-pume.jpg",
-    bio: "Dr Victor Tuwani Phume is a South African theologian, reverend, author, entrepreneur, and media leader. He holds a PhD in Leadership and Management and has authored numerous publications. He is the founder of Zallywood Media Group, including Tshwane TV and GauTV, and has dedicated much of his work to advancing faith, leadership, media, and community transformation.",
-  },
-  {
-    name: "Apostle Mufaro Maposa",
-    country: "Lesotho",
-    role: "Guest Speaker",
-    photo: "/speakers/apostle-mufaro-maposa.jpg",
-    bio: "Apostle Mufaro Maposa is an apostle, prophet, teacher, and Christian leader based in Lesotho. He is the founder and General Overseer of New Testament Church and the Manifest Sons of God Movement, established in 2006. Through his ministry, he is committed to equipping believers, advancing the Gospel, and helping people walk in the fullness of their identity and faith in Christ.",
-  },
-  {
-    // Photo replaced 2026-08-12. The previous file showed a visibly DIFFERENT man -- it was the
-    // portrait supplied under the name "Apostle Splasher" and is kept at
-    // /speakers/apostle-splasher.jpg in case it belongs to someone who still needs a card.
-    name: "Apostle Isaac Sithole",
-    country: "South Africa",
-    role: "Guest Speaker",
-    photo: "/speakers/apostle-isaac-sithole.png",
-    bio: "Apostle Isaac Sithole is a respected Christian leader, pastor, and minister of the Gospel. He serves as Senior Pastor of Oasis of Life Family Church, where he is committed to building faith, strengthening families, and advancing the Kingdom of God. He is also actively involved in Christian leadership and initiatives that seek to bring hope, unity, and positive transformation to communities.",
-  },
-  {
-    // No bio supplied yet -- the card renders name and country until one arrives.
-    name: "Dr Osasuwa",
-    country: "Nigeria",
-    role: "Guest Speaker",
-    photo: "/speakers/dr-osasuwa.png",
-  },
-  {
-    name: "Pastors Timsimon & Erica Kamani",
-    country: "Kenya",
-    role: "Guest Speakers",
-    photo: "/speakers/pastors-timsimon-erica-kamani.jpg",
-  },
-  {
-    name: "Rev Moyo",
-    country: "Bulawayo, Zimbabwe",
-    role: "Guest Speaker",
-    photo: "/speakers/rev-moyo.jpg",
-  },
-  {
-    name: "Dr Thandi Ngomelo",
-    country: "South Africa",
-    role: "Guest Speaker",
-    photo: "/speakers/dr-thandi-ngomelo.jpg",
-  },
-];
-
+// Speakers arrive as a prop from app/page.tsx, which reads them from the database so the
+// conference office can edit the line-up at /admin without a code change or a deploy.
 // The conference ran 17-19 September until 2026-08-12, when a fourth day was added at the front.
 // Declared once and used for both the default selection and the checkbox row: when those two
 // lists were written out separately, adding a day meant remembering to edit both, and missing
@@ -169,7 +68,10 @@ const initialForm = {
   consent: false,
 };
 
-export default function RegistrationForm() {
+export default function RegistrationForm({ speakers }: { speakers: Speaker[] }) {
+  const KEY_SPEAKERS = speakers.filter((p) => p.group === 'key');
+  const HOSTS = speakers.filter((p) => p.group === 'host');
+  const GUEST_SPEAKERS = speakers.filter((p) => p.group === 'guest');
   const [form, setForm] = useState(initialForm);
   const [step, setStep] = useState(1);
   const [sending, setSending] = useState(false);
@@ -294,7 +196,7 @@ export default function RegistrationForm() {
           {KEY_SPEAKERS.map((person) => (
             <article className="speaker-card" key={person.name}>
               <div className="speaker-photo-wrap">
-                <img className="speaker-photo" src={person.photo} alt={person.name} />
+                <img className="speaker-photo" src={photoUrl(person)} alt={person.name} />
               </div>
               <div className="speaker-profile">
                 <span>{person.role}</span>
@@ -313,7 +215,7 @@ export default function RegistrationForm() {
           {HOSTS.map((person) => (
             <article className="speaker-card host-card" key={person.name}>
               <div className="speaker-photo-wrap">
-                <img className="speaker-photo" src={person.photo} alt={person.name} />
+                <img className="speaker-photo" src={photoUrl(person)} alt={person.name} />
               </div>
               <div className="speaker-profile">
                 <span>{person.role}</span>
@@ -333,10 +235,10 @@ export default function RegistrationForm() {
           {GUEST_SPEAKERS.map((person) => (
             /* `no-photo` drops the image row entirely rather than leaving a grey placeholder
                where a face should be -- an empty frame reads as a broken page. */
-            <article className={`guest-card${person.photo ? "" : " no-photo"}`} key={person.name}>
-              {person.photo && (
+            <article className={`guest-card${photoUrl(person) ? "" : " no-photo"}`} key={person.id}>
+              {photoUrl(person) && (
                 <div className="guest-photo-wrap">
-                  <img className="speaker-photo" src={person.photo} alt={person.name} />
+                  <img className="speaker-photo" src={photoUrl(person)} alt={person.name} />
                 </div>
               )}
               <div className="speaker-profile">

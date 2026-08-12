@@ -1,7 +1,6 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { EVENT } from "../../lib/event";
 
 export type Row = {
   id: number;
@@ -68,7 +67,9 @@ function needsAction(row: Row) {
     row.hotelShuttle === "yes" || !!row.dietaryNeeds || !!row.accessibilityNeeds;
 }
 
-export default function RegistrationsView({ rows }: { rows: Row[] }) {
+export default function RegistrationsView(
+  { rows, header }: { rows: Row[]; header?: React.ReactNode },
+) {
   const [query, setQuery] = useState("");
   const [ticket, setTicket] = useState("all");
   const [open, setOpen] = useState<number | null>(null);
@@ -105,23 +106,7 @@ export default function RegistrationsView({ rows }: { rows: Row[] }) {
 
   return (
     <main className="admin-shell">
-      <header className="admin-head">
-        <div>
-          <p className="eyebrow gold">Word In Action Global Conference</p>
-          <h1>Registrations</h1>
-          <p className="admin-sub">{EVENT.dates} · {EVENT.venue}</p>
-        </div>
-        <div className="admin-actions">
-          <a className="primary-button inline-button" href="/api/admin/export">Download CSV</a>
-          <a className="admin-link" href="/">View the public site</a>
-          {/* Basic auth had no way to sign out short of closing the browser. On a shared office
-              machine that left the delegate list open to whoever sat down next. */}
-          <button className="admin-link admin-signout" onClick={async () => {
-            await fetch("/api/admin/logout", { method: "POST" });
-            window.location.reload();
-          }}>Sign out</button>
-        </div>
-      </header>
+      {header}
 
       <section className="admin-strip">
         <div className="admin-stat">
