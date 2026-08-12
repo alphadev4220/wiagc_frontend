@@ -112,6 +112,12 @@ export default function RegistrationsView({ rows }: { rows: Row[] }) {
         <div className="admin-actions">
           <a className="primary-button inline-button" href="/api/admin/export">Download CSV</a>
           <a className="admin-link" href="/">View the public site</a>
+          {/* Basic auth had no way to sign out short of closing the browser. On a shared office
+              machine that left the delegate list open to whoever sat down next. */}
+          <button className="admin-link admin-signout" onClick={async () => {
+            await fetch("/api/admin/logout", { method: "POST" });
+            window.location.reload();
+          }}>Sign out</button>
         </div>
       </header>
 

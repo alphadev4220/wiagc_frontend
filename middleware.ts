@@ -1,37 +1,22 @@
 import { NextResponse, type NextRequest } from "next/server";
+import { ADMIN_COOKIE, hasAdminSession } from "./lib/admin-auth";
 
-// GATE ON /admin.
+// GATE ON THE ADMIN APIs.
 //
-// This is the only part of the site that serves delegates' personal data -- phone numbers, home
-// countries, flight numbers, dietary and medical needs, emergency contacts. It runs in
-// middleware rather than inside the page so the check happens before any handler touches the
-// database, and so /api/admin/export is covered by the same rule as the page it belongs to.
-// A check inside the React tree would leave the CSV endpoint open.
-
-/** Compares without returning early on the first differing byte. */
-function safeEqual(a: string, b: string) {
-  if (a.length !== b.length) return false;
-  let diff = 0;
-  for (let i = 0; i < a.length; i += 1) diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
-  return diff === 0;
-}
-
-export function middleware(request: NextRequest) {
-  const user = process.env.WIAGC_ADMIN_USER || "admin";
-  const password = process.env.WIAGC_ADMIN_PASSWORD || "";
-
-  // FAIL CLOSED. A missing or empty password locks the page rather than opening it. The opposite
-  // default -- "no password configured, so let everyone in" -- would publish the delegate list
-  // the first time someone deployed without the env file.
-  if (!password) {
-    return new NextResponse("Admin access is not configured on this server.\n", {
-      status: 503,
-      headers: { "content-type": "text/plain", "cache-control": "no-store" },
-    });
+// The /admin PAGE checks the session itself and renders the login card when there isn't one --
+// that is what makes a centred login form possible at all, since middleware can only redirect
+// or return a bare response, not render UI.
+//
+// The APIs cannot do that. /api/admin/export streams every delegate's contact details as a CSV,
+// so it is checked here, before the handler runs. Login and logout are deliberately exempt:
+// they are how a session is obtained and discarded, and gating them would lock everyone out.
+export async function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+  if (pathname === "/api/admin/login" || pathname === "/api/admin/logout") {
+    return NextResponse.next();
   }
 
-  const supplied = request.headers.get("authorization") || "";
-  if (safeEqual(supplied, `Basic ${btoa(`${user}:${password}`)}`)) {
+  if (await hasAdminSession(request.cookies.get(ADMIN_COOKIE)?.value)) {
     const response = NextResponse.next();
     // Personal data must not be stored by proxies or the browser's back/forward cache.
     response.headers.set("cache-control", "no-store, private");
@@ -39,14 +24,10 @@ export function middleware(request: NextRequest) {
     return response;
   }
 
-  return new NextResponse("Authentication required\n", {
+  return NextResponse.json({ error: "Sign in at /admin first." }, {
     status: 401,
-    headers: {
-      "WWW-Authenticate": 'Basic realm="WIAGC admin", charset="UTF-8"',
-      "content-type": "text/plain",
-      "cache-control": "no-store",
-    },
+    headers: { "cache-control": "no-store" },
   });
 }
 
-export const config = { matcher: ["/admin", "/admin/:path*", "/api/admin/:path*"] };
+export const config = { matcher: ["/api/admin/:path*"] };
