@@ -3,6 +3,14 @@
 // Used ONLY to seed an empty speakers table on first run. After that the database is the single
 // source of truth and this list is never read again -- editing it would silently do nothing,
 // which is why it is here rather than left looking authoritative inside the page component.
+
+// The largest portrait the site accepts, in ONE place: the hint under the file input, the
+// browser-side check and the server-side check all read it. nginx is configured a little higher
+// (8m) on purpose -- that is the transport cap, and it needs headroom for multipart framing so a
+// file at exactly the limit is rejected by this message rather than by a bare nginx 413.
+export const MAX_PHOTO_MB = 6;
+export const MAX_PHOTO_BYTES = MAX_PHOTO_MB * 1024 * 1024;
+
 export type SpeakerGroup = "key" | "host" | "guest";
 
 export const GROUPS: { value: SpeakerGroup; label: string; role: string }[] = [

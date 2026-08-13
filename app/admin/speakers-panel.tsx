@@ -1,7 +1,7 @@
 "use client";
 
 import { FormEvent, useState } from "react";
-import { GROUPS, photoUrl, type Speaker } from "../../lib/speakers";
+import { GROUPS, MAX_PHOTO_BYTES, MAX_PHOTO_MB, photoUrl, type Speaker } from "../../lib/speakers";
 
 // Add, edit, reorder and remove the people shown on the public home page.
 //
@@ -80,7 +80,20 @@ export default function SpeakersPanel({ speakers }: { speakers: Speaker[] }) {
             </label>
             <label>
               Photo{editing ? " (leave empty to keep the current one)" : ""}
-              <input name="photo" type="file" accept="image/*" />
+              <input name="photo" type="file" accept="image/*" onChange={(event) => {
+                // Checked here as well as on the server so an oversized file is caught before
+                // several megabytes are pushed over what may be a phone connection.
+                const file = event.target.files?.[0];
+                if (file && file.size > MAX_PHOTO_BYTES) {
+                  setError(`That photo is ${(file.size / 1048576).toFixed(1)} MB. The limit is ${MAX_PHOTO_MB} MB — please resize it and try again.`);
+                  event.target.value = "";
+                } else {
+                  setError("");
+                }
+              }} />
+              <small className="admin-hint">
+                JPG, PNG or WebP · up to {MAX_PHOTO_MB} MB · portrait orientation works best
+              </small>
             </label>
             <label className="full">
               Statement

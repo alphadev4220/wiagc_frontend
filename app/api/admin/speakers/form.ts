@@ -1,12 +1,10 @@
-import { GROUPS } from "../../../../lib/speakers";
+import { GROUPS, MAX_PHOTO_BYTES, MAX_PHOTO_MB } from "../../../../lib/speakers";
 
 // Shared multipart parsing for create and update.
 //
 // The photo arrives as a file part, so the body is form-data rather than JSON. Limits are
 // enforced here rather than trusted from the browser: a <input accept="image/*"> is a hint to
 // the file picker, not a constraint on what gets posted.
-const MAX_PHOTO_BYTES = 6 * 1024 * 1024;
-
 export type SpeakerValues = {
   group: string; name: string; country: string; role: string; bio: string; sortOrder: number;
 };
@@ -44,7 +42,10 @@ export async function readSpeakerForm(request: Request): Promise<
       return { error: "The photo must be an image file.", status: 400 };
     }
     if (file.size > MAX_PHOTO_BYTES) {
-      return { error: `That photo is ${(file.size / 1048576).toFixed(1)} MB. The limit is 6 MB.`, status: 413 };
+      return {
+        error: `That photo is ${(file.size / 1048576).toFixed(1)} MB. The limit is ${MAX_PHOTO_MB} MB.`,
+        status: 413,
+      };
     }
     photo = { data: Buffer.from(await file.arrayBuffer()), type: file.type };
   }

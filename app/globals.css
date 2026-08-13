@@ -342,3 +342,6 @@ footer span { color:#9fb0bc; }
   .speaker-thumb { width:48px; height:48px; }
   .speaker-acts { grid-column:1/-1; }
 }
+/* Field hints. Regular weight and muted so they read as guidance rather than as another label —
+   the labels themselves are uppercase and bold. */
+.admin-hint { font-weight:400; font-size:.72rem; color:var(--muted); line-height:1.45; }
